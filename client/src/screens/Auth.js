@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
-import { Text, View, Button, StyleSheet, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, View, Button, StyleSheet, TextInput, ScrollView } from 'react-native'
 
 export default function Auth ({ route, navigation }) {
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
   const [parentPin, setParentPin] = useState('')
-  const [childrenPin, setChildrenPin] = useState('')
+  const [email, setEmail] = useState('')
+  const [type, setType] = useState('REGISTER')
+  const [loginText, setLoginText] = useState('Already have an account?')
+  const [toLoginBtn, setToLoginBtn] = useState('LOGIN')
   const { shelf } = route.params
 
   function checkInputNumber (input) {
@@ -15,7 +18,26 @@ export default function Auth ({ route, navigation }) {
 
   function register () {
     // register to server
+    // navigation.navigate('ShelfDetail', { shelf })
+    const payload = {
+      email,
+      name,
+      age,
+      parentPin
+    }
     navigation.navigate('ShelfDetail', { shelf })
+  }
+
+  function changeType () {
+    if (type == 'REGISTER') {
+      setType('LOGIN')
+      setToLoginBtn('REGISTER')
+      setLoginText('Not have an account yet?')
+    } else {
+      setType('REGISTER')
+      setToLoginBtn('LOGIN')
+      setLoginText('Already have an account?')
+    }
   }
 
   return (
@@ -23,36 +45,49 @@ export default function Auth ({ route, navigation }) {
       <View style={styles.authBox}>
         <View style={styles.leftContainer}>
           <Text style={styles.title}>REGISTRATION</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="NAME"
-            onChangeText={text => setName(text)}
-            value={name}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="AGE"
-            keyboardType="numeric"
-            onChangeText={text => setAge(text)}
-            value={age}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="PARENT PIN"
-            keyboardType="numeric"
-            onChangeText={text => setParentPin(text)}
-            value={parentPin}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="CHILDREN PIN"
-            keyboardType="numeric"
-            onChangeText={text => setChildrenPin(text)}
-            value={childrenPin}
-          />
+          <View style={styles.inputBox}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              onChangeText={text => setEmail(text)}
+              value={email}
+              disableFullscreenUI={true}
+            />
+            { type == 'REGISTER' ? 
+              <View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="NAME"
+                  onChangeText={text => setName(text)}
+                  value={name}
+                  disableFullscreenUI={true}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="AGE"
+                  keyboardType="numeric"
+                  onChangeText={text => setAge(text)}
+                  value={age}
+                  disableFullscreenUI={true}
+                />
+              </View> : <View></View>
+            }
+            <TextInput
+              style={styles.input}
+              placeholder="PARENT PIN"
+              keyboardType="numeric"
+              onChangeText={text => setParentPin(text)}
+              value={parentPin}
+              disableFullscreenUI={true}
+            />
+          </View>
         </View>
         <View style={styles.rigthContainer}>
-          <Button title="Register" onPress={() => register()} />
+          <View style={styles.loginTextBox} >
+            <Text style={styles.toLoginBtn} onPress={() => changeType()}>{ toLoginBtn }</Text>
+            <Text style={styles.loginText} >{ loginText }</Text>
+          </View>
+          <Button title={type} onPress={() => register()} />
         </View>
       </View>
     </View>
@@ -74,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 2,
     paddingHorizontal: 25,
     paddingVertical: 25,
-    gap: 10,
+    marginHorizontal: 5,
   },
   title: {
     fontSize: 20,
@@ -90,5 +125,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingVertical: 5,
     paddingHorizontal: 15,
+  },
+  inputBox: {
+    borderWidth: 1
+  },
+  loginTextBox: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+  },
+  loginText: {
+    fontSize: 14
+  },
+  toLoginBtn: {
+    color: 'blue'
   }
 })

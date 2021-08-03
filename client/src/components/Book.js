@@ -25,7 +25,7 @@ export default function Book (props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 'auto'
+    margin: 5,
   },
   book: {
 

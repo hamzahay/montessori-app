@@ -1,14 +1,25 @@
 import React from 'react'
 import { Text, View, Button, StyleSheet } from 'react-native'
+import * as SecureStore from 'expo-secure-store'
 
 export default function Shelf (props) {
   const shelf = props.shelf
   const navigation = props.navigation
 
-  function checkAuth () {
-    // add auth checker later
-    // navigation.navigate('ShelfDetail', { shelf }) if already registered
-    navigation.navigate('Auth', { shelf })
+  async function checkAuth () {
+    try {
+      // add auth checker later
+      // navigation.navigate('ShelfDetail', { shelf }) if already registered
+      // const result = await SecureStore.getItemAsync('accessToken')
+      // if (result) {
+      //   navigation.navigate('ShelfDetail', { shelf })
+      // } else {
+      //   navigation.navigate('Auth', { shelf })
+      // }
+      navigation.navigate('Auth', { shelf })
+    } catch (err) {
+      console.log("err", err)
+    }
   }
 
   return (

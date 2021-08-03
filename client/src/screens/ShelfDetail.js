@@ -18,14 +18,18 @@ export default function  ShelfDetail ({ route, navigation }) {
     }
   }, [allBooks])
 
+  function toLibrary () {
+    navigation.navigate('Library')
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
         <View style={styles.top}>
-          <Button title="Library" />
+          <Button title="Library" onPress={() => toLibrary()} />
         </View>
         <View style={styles.bookContainer}>
-          { books ? books.map((book, index) => <Book key={index} book={book} navigation={navigation} books={books} />) : '' }
+          { books ? books.map((book, index) => <Book key={index} book={book} navigation={navigation} books={books} />) : <View></View> }
         </View>
       </View>
     </View>
@@ -51,6 +55,5 @@ const styles = StyleSheet.create({
     padding: 25,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    gap: 5
   }
 })

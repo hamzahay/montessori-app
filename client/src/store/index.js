@@ -10,7 +10,8 @@ const initialState = {
     { shelf: 3, book: [1, 2, 3] },
   ],
   userType: 'children',
-  currentShelf: []
+  currentShelf: [],
+  ebooks: [1, 2, 3]
 }
 
 function reducer (state = initialState, action) {

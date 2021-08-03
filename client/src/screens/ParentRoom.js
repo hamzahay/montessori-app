@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flexDirection: 'row-reverse',
-    gap: 5,
+    marginHorizontal: 5,
   },
   bottomContainer: {
     flex: 1,

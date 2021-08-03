@@ -36,13 +36,13 @@ export default function Classroom ({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.topContainer}>
         <Button title="Parent Room" onPress={() => toParentRoom()} />
-        { showModal ? <Button title="Cancel" onPress={() => setShowModal(false)} /> : '' }
+        { showModal ? <Button title="Cancel" onPress={() => setShowModal(false)} /> : <View></View> }
         { showModal ? 
           <TextInput 
             style={styles.input} 
             onChangeText={text => setParentPin()}
             placeholder="ENTER PARENT PIN"
-          /> : '' 
+          /> : <View></View> 
         }
       </View>
       <View style={styles.middleContainer}>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flexDirection: 'row-reverse',
-    gap: 5,
+    marginHorizontal: 5,
   },
   middleContainer: {
     flex: 6,
