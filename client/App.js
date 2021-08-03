@@ -23,7 +23,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="A1p3" screenOptions={{ headerShown: false }} >
+        <Stack.Navigator initialRouteName="SandpaperLetters" screenOptions={{ headerShown: false }} >
           <Stack.Screen name="WelcomePage" component={WelcomePage} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ShelfDetail" component={ShelfDetail} />
