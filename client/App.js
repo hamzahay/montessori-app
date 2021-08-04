@@ -12,10 +12,11 @@ import ParentRoom from './src/screens/ParentRoom'
 import Auth from './src/screens/Auth'
 import Library from './src/screens/Library'
 import EbookReader from './src/screens/EbookReader'
-import SandpaperLetter from './src/activity/SandpaperLetters';
+import SandpaperLetters from './src/activity/SandpaperLetters';
 import A1p1 from './src/activity/phase/A1p1'
 import A1p2 from './src/activity/phase/A1p2'
 import A1p3 from './src/activity/phase/A1p3'
+import GestureDetector from './src/activity/phase/GestureDetector'
 
 const Stack = createStackNavigator()
 
@@ -23,7 +24,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="SandpaperLetters" screenOptions={{ headerShown: false }} >
+        <Stack.Navigator initialRouteName="A1p3" screenOptions={{ headerShown: false }} >
           <Stack.Screen name="WelcomePage" component={WelcomePage} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ShelfDetail" component={ShelfDetail} />
@@ -32,10 +33,11 @@ export default function App() {
           <Stack.Screen name="Auth" component={Auth} />
           <Stack.Screen name="Library" component={Library} />
           <Stack.Screen name="EbookReader" component={EbookReader} />
-          <Stack.Screen name="SandpaperLetters" component={SandpaperLetter} />
+          <Stack.Screen name="SandpaperLetters" component={SandpaperLetters} />
           <Stack.Screen name="A1p1" component={A1p1} />
           <Stack.Screen name="A1p2" component={A1p2} />
           <Stack.Screen name="A1p3" component={A1p3} />
+          <Stack.Screen name="GestureDetector" component={GestureDetector} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar hidden={true} /> 
