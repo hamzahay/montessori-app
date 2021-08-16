@@ -5,39 +5,36 @@ import { DraxList, DraxProvider, DraxView } from 'react-native-drax'
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
-export default function ObjectMoveableAlphabet () {
+export default function LargeMoveableAlphabet () {
   const dimensions = useWindowDimensions()
   const cardPosition = useRef(new Animated.Value(0 - dimensions.width)).current
 
-  const object = useSelector(state => state.activity.activity3)
   const [mount, setMount] = useState(false)
-  const [objectList, setObjectList] = useState([''])
+  const [alphabetList, setAlphabetList] = useState([''])
   const [objectIndex, setObjectIndex] = useState(0)
-  const [currentObject, setCurrentObject] = useState([''])
+  const [currentAlphabet, setCurrentAlphabet] = useState([''])
   const [index, setIndex] = useState(0)
   const [answer, setAnswer] = useState([])
   const [finish, setFinish] = useState(false)
 
   useEffect(() => {
     if (mount) {
-      console.log('its mount')
-      setCurrentObject(objectList.shift())
+      setCurrentAlphabet(alphabetList.shift())
       comeIn()
     }
-  }, [objectList])
+  }, [alphabetList])
 
   useEffect(() => {
-    console.log('mounted')
     setMount(true)
     const newArr = []
-    while (newArr.length < 6) {
-      const random = Math.floor(Math.random() * 20)
-      const same = newArr.includes(object[random])
+    while (newArr.length < 5) {
+      const random = Math.floor(Math.random() * 26)
+      const same = newArr.includes(alphabet[random])
       if (!same) {
-        newArr.push(object[random])
+        newArr.push(alphabet[random])
       }
     }
-    setObjectList(newArr)
+    setAlphabetList(newArr)
     console.log(newArr)
     // return setMount(false)
   }, [])
@@ -66,10 +63,10 @@ export default function ObjectMoveableAlphabet () {
       setAnswer([])
       setIndex(0)
       comeOut()
-      if (objectIndex < objectList.length - 1) {
+      if (objectIndex < alphabetList.length - 1) {
         setTimeout(() => {
           setObjectIndex(objectIndex + 1)
-          setCurrentObject(objectList[objectIndex])
+          setCurrentAlphabet(alphabetList[objectIndex])
           comeIn()
         }, 500)
       } else {
@@ -98,26 +95,17 @@ export default function ObjectMoveableAlphabet () {
             <Button title="Clear" onPress={() => {
               setAnswer([])
               setIndex(0)
-              // setCurrentObject({ ...currentObject, index: 0 })
               console.log('clear')
             }} />
           </View>
 
           <DraxView style={[styles.viewContainer, { flex: 1, padding: 15, alignItems: 'center' }]} 
             onReceiveDragDrop={({ dragged: { payload } }) => {
-              if (alphabet[payload.index] === currentObject[index]){
-                if (answer.length > 1) {
-                  setIndex(index + 1)
-                  const newList = answer.slice()
-                  newList.push(alphabet[payload.index])
-                  setAnswer(newList)
-                  reshufle()
-                } else {
-                  setIndex(index + 1)
-                  const newList = answer.slice()
-                  newList.push(alphabet[payload.index])
-                  setAnswer(newList)
-                }
+              console.log(alphabet[payload.index])
+              if (alphabet[payload.index] === currentAlphabet) {
+                reshufle()
+              } else {
+                // if not matched
               }
             }}
           >
@@ -127,13 +115,12 @@ export default function ObjectMoveableAlphabet () {
                 width: 200,
                 height: 200,
                 justifyContent: 'center',
-                // top: dimensions.height / 9 ,
                 left: 0,
                 backgroundColor: 'orange',
                 transform: [{ translateX: cardPosition }]
               }}
             >
-              <Text style={styles.currentObject}>{ currentObject.join('') }</Text>
+              <Text style={styles.currentAlphabet}>{ currentAlphabet }</Text>
             </Animated.View>
 
             <View style={{ alignSelf: 'center', borderWidth: 1, flexDirection: 'row' }}>
@@ -191,8 +178,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignSelf: 'center',
   },
-  currentObject: {
-    fontSize: 55,
+  currentAlphabet: {
+    fontSize: 100,
     alignSelf: 'center',
     marginHorizontal: 35,
   },

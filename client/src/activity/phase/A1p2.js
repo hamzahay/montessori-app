@@ -1,8 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 import { Animated ,View, Text, StyleSheet, Button, useWindowDimensions, Easing } from 'react-native'
 
-export default function A1p2 () {
+export default function A1p2 (props) {
   const dimensions = useWindowDimensions()
+  const alphabetList = ['A', 'B', 'C']
+
   const item1 = useRef(new Animated.Value(0 - dimensions.height)).current
   const item2 = useRef(new Animated.Value(0 - dimensions.height)).current
   const item3 = useRef(new Animated.Value(0 - dimensions.height)).current

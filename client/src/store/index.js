@@ -1,5 +1,6 @@
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
+import activityReducer from './reducers/activity'
 
 const initialState = {
   username: '',
@@ -27,5 +28,10 @@ function reducer (state = initialState, action) {
   }
 }
 
-const store = createStore(reducer, applyMiddleware(thunk))
+const rootReducer = combineReducers({
+  user: reducer,
+  activity: activityReducer
+})
+
+const store = createStore(rootReducer, applyMiddleware(thunk))
 export default store

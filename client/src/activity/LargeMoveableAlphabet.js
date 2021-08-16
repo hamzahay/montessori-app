@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Animated, View, Text, Button, ScrollView, StyleSheet, useWindowDimensions } from 'react-native'
 import Draggable from 'react-native-draggable'
-import MoveableAlphabet from '../components/MoveableAlphabet'
+import { DraxList, DraxProvider, DraxView } from 'react-native-drax'
 
 const currentLMA = 'A'
+
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 export default function LargeMoveableAlphabet () {
   const dimensions = useWindowDimensions()

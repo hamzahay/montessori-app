@@ -18,9 +18,10 @@ import A1p2 from './src/activity/phase/A1p2'
 import A1p3 from './src/activity/phase/A1p3'
 import A1p4 from './src/activity/phase/A1p4'
 import GestureDetector from './src/activity/phase/GestureDetectorExample'
-import LargeMoveableAlphabet from './src/activity/LargeMoveableAlphabet'
+import LargeMoveableAlphabet from './src/activity/LargeMoveableAlphabet2'
 import ObjectMoveableAlphabet from './src/activity/ObjectMoveableAlphabet';
 import MoveableAlphabet from './src/components/MoveableAlphabet'
+import ReadingWords from './src/activity/ReadingWords';
 
 const Stack = createStackNavigator()
 
@@ -46,6 +47,7 @@ export default function App() {
           <Stack.Screen name="A1p4" component={A1p4} />
           <Stack.Screen name="GestureDetector" component={GestureDetector} />
           <Stack.Screen name="MoveableAlphabet" component={MoveableAlphabet} />
+          <Stack.Screen name="ReadingWords" component={ReadingWords} />
         </Stack.Navigator>
       </NavigationContainer>
       <StatusBar hidden={true} /> 
