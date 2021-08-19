@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import Shelf from '../components/Shelf'
 
 export default function Home ({ navigation }) {
-  const shelves = useSelector(state => state.shelves)
+  const shelves = useSelector(state => state.user.shelves)
 
   return (
     <View style={styles.container}>
@@ -12,7 +12,7 @@ export default function Home ({ navigation }) {
         <Text>Home</Text>
       </View>
       <View style={styles.shelfContainer}>
-      { shelves ? shelves.map((shelf, index) => <Shelf key={index} shelf={shelf} navigation={navigation} />) : '' }
+      { shelves ? shelves.map((shelf, index) => <Shelf key={index} shelf={shelf} navigation={navigation} />) : <View></View> }
       </View>
     </View>
   )

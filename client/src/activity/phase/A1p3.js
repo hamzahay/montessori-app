@@ -1,96 +1,139 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Animated, View, Text, StyleSheet, useWindowDimensions, Easing, TouchableOpacity, TouchableOpacityBase } from 'react-native'
-import Draggable from 'react-native-draggable'
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { View, Text, StyleSheet } from 'react-native'
+import GestureDetector, {
+  GestureRecorder,
+  GesturePath,
+  Cursor
+} from 'react-native-gesture-detector'
 
-const BOX_SIZE = 100
-const BOX_HALF_SIZE = BOX_SIZE / 2
+let aGesture = {
+  dummy: [],
+  dummy2: [],
+  dummy3: [],
+  dummy4: []
+}
 
-export default function A1p3 () {
-  const dimensions = useWindowDimensions()
-  const divider = dimensions.width / 5
-  const [reverse, setReverse] = useState(true)
-  const [pan1Config, setPan1Config] = useState({ x: (dimensions.width / 2 - 65) - 150 , y: dimensions.height / 2 - 65, z: 1, reverse: true })
-  const [pan2Config, setPan2Config] = useState({ x: (dimensions.width / 2 - 65), y: dimensions.height / 2 - 65, z: 1, reverse: true })
-  const [pan3Config, setPan3Config] = useState({ x: (dimensions.width / 2 - 65) + 145, y: dimensions.height / 2 - 65, z: 1, reverse: true })
-  const [test, setTest] = useState({ isTrue: false })
-  const match = true
+export default function A1p3 (props) {
+  const alphabetList = props.alphabetList
+  const allGestures = useSelector(state => state.activity.activity1)
+  const [alphabetIndex, setAlphabetIndex] = useState(0)
+  const [currentGesture, setCurrentGesture] = useState({})
+  const [gestureTracker, setGestureTracker] = useState({})
+  const [gestureSum, setGestureSum] = useState(0)
+  // const [newGesture, setNewGesture] = useState([])
+  const [mount, setMount] = useState(false)
+
+  useEffect(() => {
+    console.log(gestureTracker)
+  }, [gestureTracker])
+
+  useEffect(() => {
+    console.log('call gesture handler')
+    getGesture()
+  }, [alphabetIndex])
+
+  function getGesture () {
+    console.log('getGesture')
+    console.log('alphabetIndex', alphabetIndex)
+    console.log('gestureSum', gestureSum)
+    const newGesture = allGestures.filter(gesture => gesture.letter === alphabetList[alphabetIndex])
+    aGesture = newGesture[0].gesture
+    console.log('1')
+    getGestureDetail()
+    console.log('4')
+  }
+
+  function getGestureDetail () {
+    console.log('2')
+    console.log('aGesture1', aGesture)
+    delete aGesture.dummy
+    delete aGesture.dummy2
+    delete aGesture.dummy3
+    delete aGesture.dummy4
+    console.log('aGesture2', aGesture)
+    let length = 0
+    let tracker = {}
+    for (key in aGesture) {
+      tracker[key] = false 
+      length++
+    }
+    if (length < 2) {
+      aGesture['dummy'] = []
+      aGesture['dummy2'] = []
+      aGesture['dummy3'] = []
+    } else if (length < 3) {
+      aGesture['dummy'] = []
+      aGesture['dummy2'] = []
+    } else if (length < 4) {
+      aGesture['dummy'] = []
+    }
+    console.log('3')
+    console.log('length', length)
+    console.log('tracker', tracker)
+    setGestureSum(length)
+    setGestureTracker(tracker)
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.cardContainer}>
-        <Draggable
-          renderColor='orange'
-          x={ pan1Config.x }
-          y={ pan1Config.y }
-          z={ pan1Config.z }
-          shouldReverse={pan1Config.reverse}
-          onPressIn={() => setPan1Config({ ...pan1Config, z: 2 })}
-          onDragRelease={(event) => {
-            setPan1Config({ ...pan1Config, z: 1 })
-            if (event.nativeEvent.pageX > 580 && event.nativeEvent.pageY > 290) {
-              if (match == true) {
-                console.log('its a match')
-                setPan1Config({ ...pan1Config, x: 550, y: 275 })
-              }
-            } else {
-              console.log('no match')
-            }
-          }}
-          children={<Text style={styles.textStyle}>A</Text>}
-        >
-        </Draggable>
-        <Draggable
-          renderSize={100}
-          renderColor='orange'
-          x={ pan2Config.x }
-          y={ pan2Config.y }
-          z={ pan2Config.z }
-          shouldReverse={pan2Config.reverse}
-          onPressIn={() => setPan2Config({ ...pan2Config, z: 2 })}
-          onDragRelease={(event) => {
-            setPan2Config({ ...pan2Config, z: 1 })
-            if (event.nativeEvent.pageX > 580 && event.nativeEvent.pageY > 290) {
-              if (match == true) {
-                console.log('its a match')
-                setPan2Config({ ...pan1Config, x: 550, y: 275 })
-              }
-            } else {
-              console.log('no match')
-            }
-          }}
-          children={<Text style={styles.textStyle}>B</Text>}
-        >
-        </Draggable>
-        <Draggable
-          renderSize={100}
-          renderColor='orange'
-          width={(dimensions.width / 2 - 65)}
-          x={ pan3Config.x }
-          y={ pan3Config.y }
-          z={ pan3Config.z }
-          shouldReverse={pan3Config.reverse}
-          onPressIn={() => setPan2Config({ ...pan3Config, z: 2 })}
-          onDragRelease={(event) => {
-            setPan3Config({ ...pan3Config, z: 1 })
-            if (event.nativeEvent.pageX > 580 && event.nativeEvent.pageY > 290) {
-              if (match == true) {
-                console.log('its a match')
-                setPan3Config({ ...pan1Config, x: 550, y: 275 })
-              }
-            } else {
-              console.log('no match')
-            }
-          }}
-          children={<Text style={styles.textStyle}>C</Text>}
-        >
-        </Draggable>
-        <View style={{
-          position: 'absolute',
-          borderWidth: 1,
-          height: 150,
-          left: dimensions.width / 2 - 0.5,
-        }}></View>
+
+      <View style={styles.letterBox}>
+        <Text style={styles.textStyle}>{ alphabetList[alphabetIndex] }</Text>
       </View>
+
+      {/* 
+        the commented code bellow is used to add more gesture path
+        to add more gesture, comment GestureDetector and uncomment GestureRecorder
+        change the Text above to letter that want to be traced
+        and start tracing and the result will out on console
+      */}
+
+      {/* <GestureRecorder onPanRelease={(gesture) => console.log(gesture)}>
+        {({ gesture, offset }) => (
+          <View style={{ position: "relative", width: "100%", height: "100%" }}>
+            <GesturePath path={gesture} color="green" slopRadius={35} />
+          </View>
+        )}
+      </GestureRecorder> */}
+
+      <GestureDetector
+        onGestureFinish={(gesture) => {
+          console.log(`Gesture "${gesture}"`)
+          if (!gestureTracker[gesture]) {
+            console.log('get tracked')
+            console.log('length', gestureSum)
+            const newObj = { ...gestureTracker }
+            newObj[gesture] = true
+            setGestureTracker(newObj)
+            setGestureSum(gestureSum - 1)
+          } else {
+            console.log('its already tracked')
+          }
+        } }
+        onPanRelease={() => {
+          console.log('pan release')
+          if (gestureSum === 0) {
+            if (alphabetIndex >= 2) {
+              props.goToNextPhase()
+            } else {
+              setTimeout(() => {
+                setAlphabetIndex(alphabetIndex + 1)
+              }, 300)
+            }
+          }
+        }}
+        gestures={aGesture}
+        slopRadius={35}
+      >
+        {({ coordinate }) => (
+          <View style={{ position: "relative", width: "100%", height: "100%" }}>
+            
+            {coordinate && <Cursor {...coordinate} />}
+          </View>
+        )}
+      </GestureDetector>
+
     </View>
   )
 }
@@ -98,15 +141,20 @@ export default function A1p3 () {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  cardContainer: {
-    flex: 1,
-    borderWidth: 1,
+  letterBox: {
+    position: 'absolute',
+    height: 250,
+    width: 250,
+    backgroundColor: 'orange',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   textStyle: {
-    fontSize: 100,
-    alignSelf: 'center',
-    marginHorizontal: 35,
+    fontSize: 250,
+    alignSelf: 'center'
   }
 })

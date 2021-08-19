@@ -1,32 +1,42 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Animated, View, Text, Button, ScrollView, StyleSheet, useWindowDimensions } from 'react-native'
-import Draggable from 'react-native-draggable'
+import React, { useRef, useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { Animated, View, Text, Button, StyleSheet, useWindowDimensions } from 'react-native'
 import { DraxList, DraxProvider, DraxView } from 'react-native-drax'
-
-const currentLMA = 'A'
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
 export default function LargeMoveableAlphabet () {
   const dimensions = useWindowDimensions()
-  const [match, setMatch] = useState(true)
-  const cardPosition = useRef(new Animated.Value(0 - dimensions.width / 2)).current
-  const [panConfig1, setPanConfig1] = useState({
-    x: dimensions.width - 130,
-    y: (dimensions.height / 2 - 65) - 100,
-    z: 1,
-    letter: 'A'
-  })
-  const [panConfig2, setPanConfig2] = useState({
-    x: dimensions.width - 130,
-    y: (dimensions.height / 2 - 65) + 100,
-    z: 1,
-    letter: 'B'
-  })
+  const cardPosition = useRef(new Animated.Value(0 - dimensions.width)).current
 
+  const [mount, setMount] = useState(false)
+  const [alphabetList, setAlphabetList] = useState([''])
+  const [objectIndex, setObjectIndex] = useState(0)
+  const [currentAlphabet, setCurrentAlphabet] = useState([''])
+  const [index, setIndex] = useState(0)
+  const [answer, setAnswer] = useState([])
+  const [finish, setFinish] = useState(false)
 
   useEffect(() => {
-    comeIn()
+    if (mount) {
+      setCurrentAlphabet(alphabetList.shift())
+      comeIn()
+    }
+  }, [alphabetList])
+
+  useEffect(() => {
+    setMount(true)
+    const newArr = []
+    while (newArr.length < 5) {
+      const random = Math.floor(Math.random() * 26)
+      const same = newArr.includes(alphabet[random])
+      if (!same) {
+        newArr.push(alphabet[random])
+      }
+    }
+    setAlphabetList(newArr)
+    console.log(newArr)
+    // return setMount(false)
   }, [])
 
   function comeIn () {
@@ -40,107 +50,142 @@ export default function LargeMoveableAlphabet () {
 
   function comeOut () {
     Animated.spring(cardPosition, {
-      toValue: 0 - dimensions.width / 2,
+      toValue: 0 - dimensions.width,
       speed: 1,
       delay: 200,
       useNativeDriver: true
     }).start()
   }
-  
+
+  function reshufle () {
+    // add sound that confirm the answer here
+    setTimeout(() => {
+      setAnswer([])
+      setIndex(0)
+      comeOut()
+      if (objectIndex < alphabetList.length - 1) {
+        setTimeout(() => {
+          setObjectIndex(objectIndex + 1)
+          setCurrentAlphabet(alphabetList[objectIndex])
+          comeIn()
+        }, 500)
+      } else {
+        finished()
+      }
+    }, 1000)
+  }
+
+  function finished () {
+    console.log('finish')
+  }
+
   return (
-    <View style={styles.container}>
+    <DraxProvider>
+      { !finish ?
+        <View style={styles.container}>
 
-      <View
-        style={{
-          position: 'absolute',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly'
-        }}
-      >
-        <Button title="Start" onPress={() => comeIn()} />
-        <Button title="End" onPress={() => comeOut()} />
-      </View>
+          <View
+            style={{
+              position: 'absolute',
+              justifyContent: 'space-evenly'
+            }}
+          >
+            <Button title="Start" onPress={() => comeIn()} />
+            <Button title="End" onPress={() => comeOut()} />
+            <Button title="Clear" onPress={() => {
+              setAnswer([])
+              setIndex(0)
+              console.log('clear')
+            }} />
+          </View>
 
-      <Animated.View
-        style={{
-          position: 'absolute',
-          width: 200,
-          height: 200,
-          justifyContent: 'center',
-          top: dimensions.height / 2 - 100 ,
-          backgroundColor: 'orange',
-          transform: [{ translateX: cardPosition }]
-        }}
-      >
-        <Text style={styles.currentLMA}>{ currentLMA }</Text>
-      </Animated.View>
-
-        <Draggable
-          x={ panConfig1.x}
-          y={ panConfig1.y}
-          z={ panConfig1.z}
-          onPressIn={() => setPanConfig1({ ...panConfig1, z: 2}) }
-          onDragRelease={(event) => {
-            setPanConfig1({ ...panConfig1, z: 1 })
-              if (event.nativeEvent.pageX < 230) {
-                console.log('its in')
-                if (panConfig1.letter === currentLMA) {
-                  console.log('its a match')
-                  setTimeout(() => {
-                    comeOut()
-                  }, 1000)
-                  // setPanConfig1({ ...panConfig1, x: 550, y: 275 })
-                } else {
-                  console.log('not a match')
-                }
+          <DraxView style={[styles.viewContainer, { flex: 1, padding: 15, alignItems: 'center' }]} 
+            onReceiveDragDrop={({ dragged: { payload } }) => {
+              console.log(alphabet[payload.index])
+              if (alphabet[payload.index] === currentAlphabet) {
+                reshufle()
+              } else {
+                // if not matched
               }
-          }}
-          shouldReverse
-          renderColor={'orange'}
-          children={<Text style={styles.textStyle}>{ panConfig1.letter }</Text>}
-        />
+            }}
+          >
 
-        <Draggable
-          x={ panConfig2.x}
-          y={ panConfig2.y}
-          z={ panConfig2.z}
-          onPressIn={() => setPanConfig2({ ...panConfig2, z: 2}) }
-          onDragRelease={(event) => {
-            setPanConfig2({ ...panConfig2, z: 1 })
-              if (event.nativeEvent.pageX < 230) {
-                console.log('its in')
-                if (panConfig2.letter === currentLMA) {
-                  console.log('its a match')
-                  setTimeout(() => {
-                    comeOut()
-                  }, 1000)
-                  // setPanConfig2({ ...panConfig2, x: 550, y: 275 })
-                } else {
-                  console.log('not a match')
-                }
-              }
-          }}
-          shouldReverse
-          renderColor={'orange'}
-          children={<Text style={styles.textStyle}>{ panConfig2.letter }</Text>}
-        />
+            <Animated.View
+              style={{
+                width: 200,
+                height: 200,
+                justifyContent: 'center',
+                left: 0,
+                backgroundColor: 'orange',
+                transform: [{ translateX: cardPosition }]
+              }}
+            >
+              <Text style={styles.currentAlphabet}>{ currentAlphabet }</Text>
+            </Animated.View>
 
-    </View>
+            <View style={{ alignSelf: 'center', borderWidth: 1, flexDirection: 'row' }}>
+              <DraxList
+                horizontal={true}
+                keyExtractor={item => item}
+                data={answer}
+                renderItemContent={({ item }) => (
+                  <View style={styles.textContainer}>
+                    <Text style={styles.textStyle}>{ item }</Text>
+                  </View>
+                )}
+              />
+            </View>
+
+          </DraxView>
+
+          <View style={styles.listContainer}>
+            <DraxList
+              horizontal={true}
+              keyExtractor={item => item}
+              data={alphabet}
+              renderItemContent={({ item }) => (
+                <View style={styles.textContainer}>
+                  <Text style={styles.textStyle}>{ item }</Text>
+                </View>
+              )}
+            />
+          </View>
+
+        </View>
+      : <View></View> }
+    </DraxProvider>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
-  currentLMA: {
-    fontSize: 200,
+  listContainer: {
+    justifyContent: 'center',
+  },
+  textContainer: {
+    margin: 5,
+    width: 75,
+    height:  75,
+    borderRadius: 5,
+    backgroundColor: 'orange'
+  },
+  viewContainer: {
+    paddingTop: 15,
+    borderWidth: 1,
+    alignSelf: 'center',
+  },
+  currentAlphabet: {
+    fontSize: 100,
     alignSelf: 'center',
     marginHorizontal: 35,
   },
   textStyle: {
-    fontSize: 100,
+    fontSize: 55,
     alignSelf: 'center',
-    marginHorizontal: 35,
+    marginHorizontal: 15,
   }
 })

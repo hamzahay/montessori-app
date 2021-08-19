@@ -4,25 +4,22 @@ import { Animated, View, Button, Text, StyleSheet, useWindowDimensions, Easing }
 // phase for when teacher introduce the letter one by one
 // match the duration of the animation with the audio
 
-export default function A1p1 ({ navigation }, props) {
+export default function A1p1 (props) {
   const dimensions = useWindowDimensions()
-  const alphabetList = ['A', 'B', 'C']
+  const alphabetList = props.alphabetList
   const [index, setIndex] = useState(0)
   const [loop, setLoop] = useState(false)
   const [mount, setMount] = useState(false)
 
-  const [toggleStart, setToggleStart] = useState(false)
   const bounce = useRef(new Animated.Value(0 - dimensions.height)).current
 
   useEffect( () => {
     animation()
     setMount(true)
-    console.log('called')
   }, [])
 
   useEffect(() => {
     if (mount) {
-      console.log('index', index)
       animation()
     }
   }, [index])
@@ -49,9 +46,10 @@ export default function A1p1 ({ navigation }, props) {
   }
 
   function restartAnimation () {
-    console.log('restarted')
     if (index < 2) {
       setIndex(index + 1)
+    } else {
+      props.goToNextPhase()
     }
   }
 
@@ -59,8 +57,6 @@ export default function A1p1 ({ navigation }, props) {
     <View style={styles.container}>
       <View style={styles.activityContainer}>
         <Animated.View style={{
-          position: 'absolute',
-          left: dimensions.width / 2 - 125,
           width: 300,
           height: 300,
           backgroundColor: 'orange',
@@ -89,6 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center'
   },
   textStyle: {
     fontSize: 300,

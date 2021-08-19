@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 export default function Classroom ({ route, navigation }) {
   const { activity } = route.params
-  const books = useSelector(state => state.currentShelf[0].book)
+  const books = useSelector(state => state.user.currentShelf[0].book)
   const [parentPin, setParentPin] = useState('')
   const [showModal, setShowModal] = useState(false)
 

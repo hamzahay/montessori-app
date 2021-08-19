@@ -17,16 +17,15 @@ function Start (props) {
 
 export default function SandpaperLetter () {
   const [idx, setIdx] = useState(0)
-  const [alphabetList, setAlphabetList] = useState([])
+  const [alphabetList, setAlphabetList] = useState(['a', 'b', 'c'])
   const [status, setStatus] = useState(false)
   const [mount, setMount] = useState(false)
   const [interval, setInterval] = useState(null)
-
-  const phase = [<A1p1 alphabet={alphabetList} />, <A1p2 />, <A1p3 />]
+  const [currentPhase, setCurrentPhase] = useState(0)
 
   useEffect(() => {
     const newArr = []
-    while (newArr.length < 6) {
+    while (newArr.length < 3) {
       const random = Math.floor(Math.random() * 26)
       const same = newArr.includes(alphabet[random])
       if (!same) {
@@ -55,12 +54,23 @@ export default function SandpaperLetter () {
   }, [status])
 
   function begin () {
-    setStatus(true)
+    // setStatus(true)
+    setCurrentPhase(1)
+  }
+
+  function goToNextPhase () {
+    setTimeout(() => {
+      setCurrentPhase(currentPhase + 1)
+    }, 500)
   }
 
   return (
     <View style={styles.container}>
-      { status ? phase[idx] : <Start begin={begin} /> }
+      { currentPhase === 0 ? <Start begin={begin} /> : <View></View> }
+      { mount && currentPhase === 1 ? <A1p1 alphabetList={alphabetList} goToNextPhase={goToNextPhase} /> : <View></View> }
+      { mount && currentPhase === 2 ? <A1p2 alphabetList={alphabetList} goToNextPhase={goToNextPhase} /> : <View></View> }
+      { mount && currentPhase === 3 ? <A1p3 alphabetList={alphabetList} goToNextPhase={goToNextPhase} /> : <View></View> }
+      { mount && currentPhase === 4 ? <Text>Finished</Text> : <View></View> }
     </View>
   )
 }

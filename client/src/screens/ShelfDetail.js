@@ -8,7 +8,7 @@ export default function  ShelfDetail ({ route, navigation }) {
   const dispatch = useDispatch()
   const [books, setBooks] = useState([])
   const { shelf } = route.params
-  const allBooks = useSelector(state => state.books)
+  const allBooks = useSelector(state => state.user.books)
 
   useEffect(() => {
     const shelfBooks = allBooks.filter(activity => activity.shelf == shelf)

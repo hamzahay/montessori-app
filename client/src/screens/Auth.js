@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, Button, StyleSheet, TextInput, ScrollView } from 'react-native'
+import { useDispatch } from 'react-redux'
+import * as SecureStore from 'expo-secure-store';
+import { login } from '../store/action'
 
 export default function Auth ({ route, navigation }) {
+  const dispatch = useDispatch()
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
   const [parentPin, setParentPin] = useState('')
@@ -11,9 +15,29 @@ export default function Auth ({ route, navigation }) {
   const [toLoginBtn, setToLoginBtn] = useState('LOGIN')
   const { shelf } = route.params
 
+  useEffect(() => {
+    checkSecureStore()
+  }, [])
+
   function checkInputNumber (input) {
     const result = typeof input
     console.log(result)
+  }
+
+  async function checkSecureStore () {
+    try {
+      const secureStoreEmail = await SecureStore.getItemAsync('email')
+      if (secureStoreEmail) {
+        const secureStoreParentPin = await SecureStore.getItemAsync('parentPin')
+        const payload = {
+          email: secureStoreEmail,
+          parentPin: secureStoreParentPin
+        }
+        attempLogin(payload)
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   function register () {
@@ -25,7 +49,19 @@ export default function Auth ({ route, navigation }) {
       age,
       parentPin
     }
-    navigation.navigate('ShelfDetail', { shelf })
+    console.log(payload)
+    if (shelf) {
+      navigation.navigate('ShelfDetail', { shelf })
+    }
+  }
+
+  function attempLogin (payload = { email, parentPin }) {
+    if (payload.email) {
+      dispatch(login(payload))
+      console.log(payload)
+    } else {
+      console.log('email is empty')
+    }
   }
 
   function changeType () {
@@ -75,6 +111,7 @@ export default function Auth ({ route, navigation }) {
             <TextInput
               style={styles.input}
               placeholder="PARENT PIN"
+              secureTextEntry={true}
               keyboardType="numeric"
               onChangeText={text => setParentPin(text)}
               value={parentPin}
@@ -87,7 +124,11 @@ export default function Auth ({ route, navigation }) {
             <Text style={styles.toLoginBtn} onPress={() => changeType()}>{ toLoginBtn }</Text>
             <Text style={styles.loginText} >{ loginText }</Text>
           </View>
-          <Button title={type} onPress={() => register()} />
+          <Button title={type} onPress={() => { if (type === 'REGISTER') {
+            register()
+          } else if (type === 'LOGIN') {
+            attempLogin()
+          } }} />
         </View>
       </View>
     </View>
