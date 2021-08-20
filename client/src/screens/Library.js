@@ -4,7 +4,7 @@ import { Text, View, Button, StyleSheet } from 'react-native'
 import Ebook from '../components/Ebook'
 
 export default function Library ({ navigation }) {
-const ebooks = useSelector(state => state.ebooks)
+const ebooks = useSelector(state => state.shelf.ebooks)
 
   return (
     <View style={styles.container}>

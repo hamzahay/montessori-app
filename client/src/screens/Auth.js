@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, Button, StyleSheet, TextInput, ScrollView } from 'react-native'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import * as SecureStore from 'expo-secure-store';
-import { login } from '../store/action'
+import { login, register } from '../store/action'
 
 export default function Auth ({ route, navigation }) {
   const dispatch = useDispatch()
+  const access_token = useSelector(state => state.user.access_token)
   const [name, setName] = useState('')
   const [age, setAge] = useState('')
   const [parentPin, setParentPin] = useState('')
@@ -16,49 +17,39 @@ export default function Auth ({ route, navigation }) {
   const { shelf } = route.params
 
   useEffect(() => {
-    checkSecureStore()
-  }, [])
+    if (access_token) {
+      fillSecureStore()
+      navigation.navigate('ShelfDetail', { shelf })
+    }
+  }, [access_token])
 
-  function checkInputNumber (input) {
-    const result = typeof input
-    console.log(result)
-  }
-
-  async function checkSecureStore () {
+  async function fillSecureStore () {
     try {
-      const secureStoreEmail = await SecureStore.getItemAsync('email')
-      if (secureStoreEmail) {
-        const secureStoreParentPin = await SecureStore.getItemAsync('parentPin')
-        const payload = {
-          email: secureStoreEmail,
-          parentPin: secureStoreParentPin
-        }
-        attempLogin(payload)
-      }
+      await SecureStore.setItemAsync('access_token', access_token)
+      setName('')
+      setEmail('')
+      setAge('')
+      setParentPin('')
+      setType('REGISTER')
     } catch (err) {
       console.log(err)
     }
   }
 
-  function register () {
-    // register to server
-    // navigation.navigate('ShelfDetail', { shelf })
+  function attempRegister () {
     const payload = {
       email,
       name,
       age,
       parentPin
     }
+    dispatch(register(payload))
     console.log(payload)
-    if (shelf) {
-      navigation.navigate('ShelfDetail', { shelf })
-    }
   }
 
   function attempLogin (payload = { email, parentPin }) {
     if (payload.email) {
       dispatch(login(payload))
-      console.log(payload)
     } else {
       console.log('email is empty')
     }
@@ -88,6 +79,7 @@ export default function Auth ({ route, navigation }) {
               onChangeText={text => setEmail(text)}
               value={email}
               disableFullscreenUI={true}
+              
             />
             { type == 'REGISTER' ? 
               <View>
@@ -125,7 +117,7 @@ export default function Auth ({ route, navigation }) {
             <Text style={styles.loginText} >{ loginText }</Text>
           </View>
           <Button title={type} onPress={() => { if (type === 'REGISTER') {
-            register()
+            attempRegister()
           } else if (type === 'LOGIN') {
             attempLogin()
           } }} />

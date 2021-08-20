@@ -79,7 +79,6 @@ export default function A1p1 (props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
   },
   activityContainer: {
     flex: 1,

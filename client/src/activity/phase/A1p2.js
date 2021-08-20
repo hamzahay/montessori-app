@@ -17,7 +17,6 @@ export default function A1p2 (props) {
   const handAnimation = useRef(new Animated.Value(dimensions.height - 170)).current
 
   useEffect(() => {
-    moveHand()
     setAnswerIndex(0)
     let shuffleArr = answer.slice()
     const index = answer.length
@@ -27,7 +26,6 @@ export default function A1p2 (props) {
       shuffleArr[i] = shuffleArr[randomIndex]
       shuffleArr[randomIndex] = temp
     }
-    console.log(shuffleArr)
     setContent(shuffleArr)
     setMount(true)
   },[])
@@ -47,23 +45,32 @@ export default function A1p2 (props) {
     }).start()
   }
 
-  function startHandAnimation () {
-    Animated.spring(handAnimation, {
-      toValue: dimensions.height - 170,
+  // function startHandAnimation () {
+  //   Animated.spring(handAnimation, {
+  //     toValue: dimensions.height - 170,
+  //     speed: 1,
+  //     delay: 200,
+  //     useNativeDriver: true
+  //   }).start()
+  // }
+
+  function endAnimation () {
+    Animated.spring(animation, {
+      toValue: 0 - dimensions.height,
       speed: 1,
       delay: 200,
       useNativeDriver: true
     }).start()
   }
 
-  function moveHand () {
-    Animated.spring(handAnimation, {
-      toValue: dimensions.height,
-      speed: 1,
-      delay: 200,
-      useNativeDriver: true
-    }).start()
-  }
+  // function moveHand () {
+  //   Animated.spring(handAnimation, {
+  //     toValue: dimensions.height,
+  //     speed: 1,
+  //     delay: 200,
+  //     useNativeDriver: true
+  //   }).start()
+  // }
 
   return (
     <DraxProvider>
@@ -96,7 +103,7 @@ export default function A1p2 (props) {
                         // when all letter is answer correctly
                         setAnswerIndex(0)
                         setNextPhase(true)
-                        startHandAnimation()
+                        // startHandAnimation()
                       }
                     } else {
                       // add "nope try again" sound
@@ -113,22 +120,25 @@ export default function A1p2 (props) {
         <DraxView
             style={{
               position: 'absolute',
-              borderWidth: 1,
-              borderColor: 'red',
               padding: 5,
-              // width: 130,
-              // height: 130,
               left: dimensions.width - 170,
-              top: dimensions.height - 170,
+              top: dimensions.height - 200,
             }}
-            onDragEnter={({}) => { console.log('drag in') }}
             onReceiveDragDrop={({ dragged: { payload } }) => {
               if (content[payload.index] === answer[answerIndex]) {
                 console.log('its a match')
                 if (answerIndex < 2) {
                   setAnswerIndex(answerIndex + 1)
                 } else {
-                  props.goToNextPhase()
+                  setTimeout(() => {
+                    setNextPhase(false)
+                    setTimeout(() => {
+                      endAnimation()
+                      setTimeout(() => {
+                        props.goToNextPhase()
+                      }, 500)
+                    }, 500)
+                  }, 500)
                 }
               } else {
                 console.log('its not a match')
@@ -159,20 +169,16 @@ export default function A1p2 (props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
   },
   cardContainer: {
     flex: 1,
-    borderWidth: 1,
   },
   handContainer: {
-    borderWidth: 1,
     borderColor: 'red',
     width: 170,
     height:  170,
   },
   listContainer: {
-    borderWidth: 1,
     flexDirection: 'row',
     justifyContent: 'center',
   },

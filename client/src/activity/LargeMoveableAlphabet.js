@@ -35,7 +35,6 @@ export default function LargeMoveableAlphabet () {
       }
     }
     setAlphabetList(newArr)
-    console.log(newArr)
     // return setMount(false)
   }, [])
 
@@ -84,7 +83,7 @@ export default function LargeMoveableAlphabet () {
       { !finish ?
         <View style={styles.container}>
 
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               justifyContent: 'space-evenly'
@@ -97,7 +96,7 @@ export default function LargeMoveableAlphabet () {
               setIndex(0)
               console.log('clear')
             }} />
-          </View>
+          </View> */}
 
           <DraxView style={[styles.viewContainer, { flex: 1, padding: 15, alignItems: 'center' }]} 
             onReceiveDragDrop={({ dragged: { payload } }) => {
@@ -123,7 +122,7 @@ export default function LargeMoveableAlphabet () {
               <Text style={styles.currentAlphabet}>{ currentAlphabet }</Text>
             </Animated.View>
 
-            <View style={{ alignSelf: 'center', borderWidth: 1, flexDirection: 'row' }}>
+            <View style={{ alignSelf: 'center', flexDirection: 'row' }}>
               <DraxList
                 horizontal={true}
                 keyExtractor={item => item}
@@ -175,7 +174,6 @@ const styles = StyleSheet.create({
   },
   viewContainer: {
     paddingTop: 15,
-    borderWidth: 1,
     alignSelf: 'center',
   },
   currentAlphabet: {

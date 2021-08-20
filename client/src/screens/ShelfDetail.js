@@ -8,7 +8,7 @@ export default function  ShelfDetail ({ route, navigation }) {
   const dispatch = useDispatch()
   const [books, setBooks] = useState([])
   const { shelf } = route.params
-  const allBooks = useSelector(state => state.user.books)
+  const allBooks = useSelector(state => state.shelf.books)
 
   useEffect(() => {
     const shelfBooks = allBooks.filter(activity => activity.shelf == shelf)
@@ -29,7 +29,7 @@ export default function  ShelfDetail ({ route, navigation }) {
           <Button title="Library" onPress={() => toLibrary()} />
         </View>
         <View style={styles.bookContainer}>
-          { books ? books.map((book, index) => <Book key={index} book={book} navigation={navigation} books={books} />) : <View></View> }
+          { books ? books.map((book, index) => <Book key={index} book={book} navigation={navigation} books={books} activityIndex={index} />) : <View></View> }
         </View>
       </View>
     </View>

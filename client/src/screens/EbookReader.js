@@ -4,7 +4,7 @@ import { Text, View, Button, StyleSheet } from 'react-native'
 
 export default function EbookReader ({ route, navigation }) {
   const { detail } = route.params
-  const ebooks = useSelector(state => state.ebooks)
+  const ebooks = useSelector(state => state.shelf.ebooks)
 
   function toNextEbook () {
     navigation.navigate('EbookReader', { detail: detail + 1 })

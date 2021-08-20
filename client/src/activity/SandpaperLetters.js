@@ -9,7 +9,7 @@ const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 function Start (props) {
 
   return (
-    <View>
+    <View style={{ alignItems: 'center', justifyContent: 'center', height: '100%' }}>
       <Button title="Start" onPress={props.begin} />
     </View>
   )
@@ -34,24 +34,7 @@ export default function SandpaperLetter () {
     }
     setAlphabetList(newArr)
     setMount(true)
-  }, [idx])
-
-  useEffect(() => {
-    if (mount) {
-      // console.log('start')
-      // let count = 0
-      // if (!status) {
-      //   clearInterval(interval)
-      // }
-      // const interval = setInterval(() => {
-      //   count = count + 1
-      //   console.log('interval', count)
-      //   if (count === 3) {
-      //     setStatus(false)
-      //   }
-      // }, 13000)
-    }
-  }, [status])
+  }, [])
 
   function begin () {
     // setStatus(true)

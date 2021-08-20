@@ -20,14 +20,12 @@ export default function ObjectMoveableAlphabet () {
 
   useEffect(() => {
     if (mount) {
-      console.log('its mount')
       setCurrentObject(objectList.shift())
       comeIn()
     }
   }, [objectList])
 
   useEffect(() => {
-    console.log('mounted')
     setMount(true)
     const newArr = []
     while (newArr.length < 6) {
@@ -38,7 +36,6 @@ export default function ObjectMoveableAlphabet () {
       }
     }
     setObjectList(newArr)
-    console.log(newArr)
     // return setMount(false)
   }, [])
 
@@ -87,7 +84,7 @@ export default function ObjectMoveableAlphabet () {
       { !finish ?
         <View style={styles.container}>
 
-          <View
+          {/* <View
             style={{
               position: 'absolute',
               justifyContent: 'space-evenly'
@@ -101,42 +98,46 @@ export default function ObjectMoveableAlphabet () {
               // setCurrentObject({ ...currentObject, index: 0 })
               console.log('clear')
             }} />
-          </View>
+          </View> */}
 
-          <DraxView style={[styles.viewContainer, { flex: 1, padding: 15, alignItems: 'center' }]} 
-            onReceiveDragDrop={({ dragged: { payload } }) => {
-              if (alphabet[payload.index] === currentObject[index]){
-                if (answer.length > 1) {
-                  setIndex(index + 1)
-                  const newList = answer.slice()
-                  newList.push(alphabet[payload.index])
-                  setAnswer(newList)
-                  reshufle()
-                } else {
-                  setIndex(index + 1)
-                  const newList = answer.slice()
-                  newList.push(alphabet[payload.index])
-                  setAnswer(newList)
+          <View style={{ flexDirection: 'row' }}>
+
+            <DraxView style={[styles.viewContainer, { flex: 1, padding: 5, alignItems: 'center' }]} 
+              onReceiveDragDrop={({ dragged: { payload } }) => {
+                if (alphabet[payload.index] === currentObject[index]){
+                  if (answer.length > 1) {
+                    setIndex(index + 1)
+                    const newList = answer.slice()
+                    newList.push(alphabet[payload.index])
+                    setAnswer(newList)
+                    reshufle()
+                  } else {
+                    setIndex(index + 1)
+                    const newList = answer.slice()
+                    newList.push(alphabet[payload.index])
+                    setAnswer(newList)
+                  }
                 }
-              }
-            }}
-          >
-
-            <Animated.View
-              style={{
-                width: 200,
-                height: 200,
-                justifyContent: 'center',
-                // top: dimensions.height / 9 ,
-                left: 0,
-                backgroundColor: 'orange',
-                transform: [{ translateX: cardPosition }]
               }}
             >
-              <Text style={styles.currentObject}>{ currentObject.join('') }</Text>
-            </Animated.View>
 
-            <View style={{ alignSelf: 'center', borderWidth: 1, flexDirection: 'row' }}>
+              <Animated.View
+                style={{
+                  width: 200,
+                  height: 200,
+                  justifyContent: 'center',
+                  // top: dimensions.height / 9 ,
+                  left: 0,
+                  backgroundColor: 'orange',
+                  transform: [{ translateX: cardPosition }]
+                }}
+              >
+                <Text style={styles.currentObject}>{ currentObject.join('') }</Text>
+              </Animated.View>
+
+            </DraxView>
+
+            <View style={{ alignSelf: 'center', flexDirection: 'row', flex: 1, paddingHorizontal: 5 }}>
               <DraxList
                 horizontal={true}
                 keyExtractor={item => item}
@@ -149,9 +150,9 @@ export default function ObjectMoveableAlphabet () {
               />
             </View>
 
-          </DraxView>
+          </View>
 
-          <View style={styles.listContainer}>
+          <View style={[styles.listContainer]}>
             <DraxList
               horizontal={true}
               keyExtractor={item => item}
@@ -187,8 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange'
   },
   viewContainer: {
-    paddingTop: 15,
-    borderWidth: 1,
+    paddingTop: 5,
     alignSelf: 'center',
   },
   currentObject: {

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import Shelf from '../components/Shelf'
 
 export default function Home ({ navigation }) {
-  const shelves = useSelector(state => state.user.shelves)
+  const shelves = useSelector(state => state.shelf.shelves)
 
   return (
     <View style={styles.container}>

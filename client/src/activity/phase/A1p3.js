@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { useSelector } from 'react-redux'
-import { View, Text, StyleSheet } from 'react-native'
+import { Animated, View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import GestureDetector, {
   GestureRecorder,
   GesturePath,
@@ -15,6 +15,7 @@ let aGesture = {
 }
 
 export default function A1p3 (props) {
+  const dimensions = useWindowDimensions()
   const alphabetList = props.alphabetList
   const allGestures = useSelector(state => state.activity.activity1)
   const [alphabetIndex, setAlphabetIndex] = useState(0)
@@ -24,34 +25,29 @@ export default function A1p3 (props) {
   // const [newGesture, setNewGesture] = useState([])
   const [mount, setMount] = useState(false)
 
+  const animation = useRef(new Animated.Value(0 - dimensions.height)).current
+
   useEffect(() => {
-    console.log(gestureTracker)
   }, [gestureTracker])
 
   useEffect(() => {
-    console.log('call gesture handler')
     getGesture()
+    setTimeout(() => {
+      comeIn()
+    }, 300)
   }, [alphabetIndex])
 
   function getGesture () {
-    console.log('getGesture')
-    console.log('alphabetIndex', alphabetIndex)
-    console.log('gestureSum', gestureSum)
     const newGesture = allGestures.filter(gesture => gesture.letter === alphabetList[alphabetIndex])
     aGesture = newGesture[0].gesture
-    console.log('1')
     getGestureDetail()
-    console.log('4')
   }
 
   function getGestureDetail () {
-    console.log('2')
-    console.log('aGesture1', aGesture)
     delete aGesture.dummy
     delete aGesture.dummy2
     delete aGesture.dummy3
     delete aGesture.dummy4
-    console.log('aGesture2', aGesture)
     let length = 0
     let tracker = {}
     for (key in aGesture) {
@@ -68,19 +64,37 @@ export default function A1p3 (props) {
     } else if (length < 4) {
       aGesture['dummy'] = []
     }
-    console.log('3')
-    console.log('length', length)
-    console.log('tracker', tracker)
     setGestureSum(length)
     setGestureTracker(tracker)
+  }
+
+  function comeIn () {
+    Animated.spring(animation, {
+      toValue: 0,
+      delay: 200,
+      speed: 1,
+      useNativeDriver: true
+    }).start()
+  }
+
+  function comeOut () {
+    Animated.spring(animation, {
+      toValue: 0 - dimensions.height,
+      delay: 200,
+      speed: 1,
+      useNativeDriver: true
+    }).start()
   }
 
   return (
     <View style={styles.container}>
 
-      <View style={styles.letterBox}>
+      <Animated.View style={[
+        styles.letterBox,
+        { transform: [{ translateY: animation }] }
+      ]}>
         <Text style={styles.textStyle}>{ alphabetList[alphabetIndex] }</Text>
-      </View>
+      </Animated.View>
 
       {/* 
         the commented code bellow is used to add more gesture path
@@ -102,7 +116,6 @@ export default function A1p3 (props) {
           console.log(`Gesture "${gesture}"`)
           if (!gestureTracker[gesture]) {
             console.log('get tracked')
-            console.log('length', gestureSum)
             const newObj = { ...gestureTracker }
             newObj[gesture] = true
             setGestureTracker(newObj)
@@ -112,13 +125,15 @@ export default function A1p3 (props) {
           }
         } }
         onPanRelease={() => {
-          console.log('pan release')
           if (gestureSum === 0) {
             if (alphabetIndex >= 2) {
               props.goToNextPhase()
             } else {
               setTimeout(() => {
-                setAlphabetIndex(alphabetIndex + 1)
+                comeOut()
+                setTimeout(() => {
+                  setAlphabetIndex(alphabetIndex + 1)
+                }, 500)
               }, 300)
             }
           }
@@ -127,7 +142,11 @@ export default function A1p3 (props) {
         slopRadius={35}
       >
         {({ coordinate }) => (
-          <View style={{ position: "relative", width: "100%", height: "100%" }}>
+          <View style={{
+            position: "relative",
+            width: "100%",
+            height: "100%"
+          }}>
             
             {coordinate && <Cursor {...coordinate} />}
           </View>

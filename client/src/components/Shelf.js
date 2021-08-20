@@ -8,15 +8,12 @@ export default function Shelf (props) {
 
   async function checkAuth () {
     try {
-      // add auth checker later
-      // navigation.navigate('ShelfDetail', { shelf }) if already registered
-      // const result = await SecureStore.getItemAsync('accessToken')
-      // if (result) {
-      //   navigation.navigate('ShelfDetail', { shelf })
-      // } else {
-      //   navigation.navigate('Auth', { shelf })
-      // }
-      navigation.navigate('Auth', { shelf })
+      const result = await SecureStore.getItemAsync('access_token')
+      if (result) {
+        navigation.navigate('ShelfDetail', { shelf })
+      } else {
+        navigation.navigate('Auth', { shelf })
+      }
     } catch (err) {
       console.log("err", err)
     }
