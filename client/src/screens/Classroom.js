@@ -60,7 +60,7 @@ export default function Classroom ({ route, navigation }) {
       <View style={styles.topContainer}>
 
         <View style={{ flexDirection: 'row-reverse', justifyContent: 'space-evenly' }}>
-          { showModal ? <View></View> : <Button title="Parent Room" onPress={() => toParentRoom()} /> }
+          <Button title="Parent Room" onPress={() => toParentRoom()} />
           { showModal ? <Button title="Cancel" onPress={() => setShowModal(false)} /> : <View></View> }
           { showModal ? 
             <TextInput 
